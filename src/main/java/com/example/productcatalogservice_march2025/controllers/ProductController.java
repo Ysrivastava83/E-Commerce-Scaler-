@@ -4,12 +4,9 @@ import com.example.productcatalogservice_march2025.dtos.CategoryDto;
 import com.example.productcatalogservice_march2025.dtos.ProductDto;
 import com.example.productcatalogservice_march2025.models.Category;
 import com.example.productcatalogservice_march2025.models.Product;
-import com.example.productcatalogservice_march2025.services.IFakeStoreProductService;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+import com.example.productcatalogservice_march2025.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -23,13 +20,13 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    IFakeStoreProductService iFakeStoreProductService;
+    IProductService iProductService;
 
 
     @GetMapping("/")
     public ResponseEntity<List<ProductDto>> getAllProducts()
     {
-            List<Product> products = iFakeStoreProductService.getAllProducts();
+            List<Product> products = iProductService.getAllProducts();
             List<ProductDto> productDtos = new ArrayList<>();
             for(Product p:products)
             {
@@ -45,7 +42,7 @@ public class ProductController {
             if (productId <= 0) {
                 throw new IllegalArgumentException("Invalid product id");
             }
-            Product product = iFakeStoreProductService.getProductById(productId);
+            Product product = iProductService.getProductById(productId);
             ProductDto productDto = getProductDto(product);
             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
             map.add("called by user", "Yuvraj");
@@ -60,15 +57,18 @@ public class ProductController {
     @PutMapping("/{id}")
     public ProductDto replaceProduct(@PathVariable("id") long productId,@RequestBody ProductDto productDto)
     {           Product product = getProduct(productDto);
-                Product newProduct=iFakeStoreProductService.replaceProduct(productId,product);
+                Product newProduct= iProductService.replaceProduct(productId,product);
                 return getProductDto(newProduct);
     }
 
 
     @PostMapping
-    public ProductDto createProduct(ProductDto productDto)
+    public ProductDto createProduct(@RequestBody ProductDto productDto)
     {
-        return null;
+        Product  product=getProduct(productDto);
+       // System.out.println(product);
+        Product newProduct=iProductService.createProduct(product);
+        return getProductDto(newProduct);
     }
 
 
