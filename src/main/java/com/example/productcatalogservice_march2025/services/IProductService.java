@@ -4,7 +4,7 @@ import com.example.productcatalogservice_march2025.models.Product;
 
 import java.util.List;
 
-public interface IFakeStoreProductService
+public interface IProductService
 {
     List<Product> getAllProducts();
 
